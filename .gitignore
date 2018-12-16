@@ -11,6 +11,9 @@
 # production
 /build
 
+# development
+/__DEV
+
 # misc
 .DS_Store
 .env.local
@@ -21,3 +24,19 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# OS X
+.DS_Store*
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Linux
+.directory
+*~
+
+# WebStorm
+.idea
