@@ -25,23 +25,12 @@ export default function withServerSyncedTicker(App) {
       this.intervalController = null
 
       // Initialize sync controller
-      this.syncController = create({
-        server: '/api/servertime/timesync',
-        interval: null
-      })
-
-      // Event listener for changes in server/client time offset while syncing
-      this.syncController.on('change', offset => {
-        this.setState(()=>({
-          lastSync: Date.now() + offset,
-          synced: true,
-          offset
-        }))
+      this.syncController = this.initializeSyncController(
+        create, '/api/servertime/timesync'
+      ).on('change', offset => {  // change in server/client time offset while syncing
         this.setInternalClock(offset, 1000)
-      })
-
-      // Start syncing process ASAP
-      this.syncController.sync()
+        this.setState(()=>({ lastSync: Date.now() + offset, synced: true, offset }))
+      }).sync() // Start syncing process ASAP
     }
 
     /**
@@ -63,6 +52,14 @@ export default function withServerSyncedTicker(App) {
         }, interval, () => this.syncController.sync()
       )
       this.intervalController.start()
+    }
+
+    // create = timesyncLibraryFactoryFunction (https://www.npmjs.com/package/timesync)
+    initializeSyncController = (create, serverTimesyncUrl, interval) => {
+      return create({
+        server: serverTimesyncUrl,
+        interval: interval ? interval : null
+      })
     }
 
     timestampToNextRoundSecond = timestamp => {
