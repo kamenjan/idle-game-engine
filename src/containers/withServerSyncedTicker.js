@@ -1,6 +1,5 @@
 import React from 'react'
 import { create } from 'timesync/dist/timesync'
-import selfAdjustingInterval from '../utils/selfAdjustingInterval'
 import { sleep } from '../utils/functional'
 import moment from 'moment'
 
@@ -19,47 +18,51 @@ export default function withServerSyncedTicker(App) {
         offset: 0
       }
 
-      // this.tickDuration = 1000
-      // this.currentTick = 0
-
-      this.intervalController = null
-
       // Initialize sync controller
       this.syncController = this.initializeSyncController(
         create, '/api/servertime/timesync'
-      ).on('change', offset => {  // change in server/client time offset while syncing
-        this.setInternalClock(offset, 1000)
+      )
+
+      this.syncController.on('change', async offset => {  // change in server/client time offset while syncing
+        this.internalClock && this.internalClock.stop()
+        this.internalClock = await this.setInternalClock(offset, 1000).start()
         this.setState(()=>({ lastSync: Date.now() + offset, synced: true, offset }))
       }).sync() // Start syncing process ASAP
+
     }
 
-    /**
-     * Wait for whole second and start interval/tick that saves server time to
-     * local state
-     *
-     * @param {int} offset Server/client time delta
-     *
-     * @param {int} interval Interval expressed in milliseconds
-     */
-    setInternalClock = async (offset, interval) => {
-      if (this.intervalController) this.intervalController.stop()
-      sleep(this.timestampToNextRoundSecond(Date.now() + offset))
-      this.intervalController = new selfAdjustingInterval(() => {
-          this.setState(()=>({
-            serverTime: Date.now() + offset,
-            localTime: Date.now()
-          }))
-        }, interval, () => this.syncController.sync()
-      )
-      this.intervalController.start()
-    }
-
-    // create = timesyncLibraryFactoryFunction (https://www.npmjs.com/package/timesync)
     initializeSyncController = (create, serverTimesyncUrl, interval) => {
       return create({
         server: serverTimesyncUrl,
         interval: interval ? interval : null
       })
+    }
+
+    setInternalClock (offset, interval) {
+      let expected, timeout
+      this.start = async () => {
+        await sleep(this.timestampToNextRoundSecond(Date.now() + offset))
+        expected = Date.now() + interval
+        timeout = setTimeout(step, interval)
+        return this
+      }
+
+      this.stop = () => clearTimeout(timeout)
+
+      const step = () => {
+        let drift = Date.now() - expected
+        if (drift > interval) {
+          this.stop()
+        } else {
+          this.setState(()=>({
+            serverTime: Date.now() + offset,
+            localTime: Date.now()
+          }))
+          expected += interval
+          timeout = setTimeout(step, Math.max(0, interval-drift))
+        }
+      }
+      return this
     }
 
     timestampToNextRoundSecond = timestamp => {
