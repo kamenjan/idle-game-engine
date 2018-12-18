@@ -1,57 +1,23 @@
 import React, { Component } from 'react'
 import './App.css'
 
-import moment from 'moment'
-
 class App extends Component {
 
-  /**
-   * Initialization
-   */
   constructor(props) {
     super(props)
     this.state = {
-      currentTick: 0,
-      tickDuration: 2000, // Expressed in milliseconds
-      clientCurrentTime: moment().format(`HH:mm:ss`),
-      currentSeverTime: 0,
       iron: 0,
       ironModifier: 0
     }
-
-    // Game loop interval
-    // this.interval = setInterval(this.tick, this.state.tickDuration)
-
-    // Server URL
-    // this.serverUrl = `http://127.0.0.1:5000`
-    this.serverUrl = `http://localhost:5000`
-
-    this.updateIronModifier = this.updateIronModifier.bind(this)
-    this.handleIronModifierChange = this.handleIronModifierChange.bind(this)
-    this.getIron = this.getIron.bind(this)
   }
 
-  componentWillMount () {
-    // this.tick()
-  }
-
-  componentWillUnmount () {
-    // clearInterval(this.interval)
-  }
-
-
-  /**
-   * Resource (iron) Hooks
-   */
-  handleIronModifierChange (e) {
+  handleIronModifierChange = (e) => {
     e.preventDefault()
     this.setState({ironModifier: e.target.value});
   }
-  async updateIronModifier (e) {
+  updateIronModifier = async (e) => {
     e.preventDefault()
-
     console.log(this.state.ironModifier)
-
     fetch(`/api/resources/iron`, {
       method: 'POST',
       headers: {
@@ -63,28 +29,21 @@ class App extends Component {
       })
     })
   }
-  async getIron (e) {
+  getIron = async (e) => {
     e.preventDefault()
     try {
       const res = await fetch(`/api/resources/iron`)
       const { base, modifier, last_update } = await res.json()
       this.setState( () => ({
         iron: base,
-        ironModifier: modifier
+        ironModifier: modifier,
+        last_update
       }))
     } catch (err) {
       console.log(err)
     }
   }
 
-  /**
-   * Game Loop
-   */
-  gameLoop = () => {}
-
-  /**
-   * UI
-   */
   render() {
     return (
       <div className="App">

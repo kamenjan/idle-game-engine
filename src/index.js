@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 import App from './App';
-import serverTime from './services/syncClock'
+import withServerSyncedTicker from './containers/withServerSyncedTicker'
 
 import * as serviceWorker from './serviceWorker';
 
-const AppWithServerTime = serverTime(App)
+const AppWithServerSyncedTicker = withServerSyncedTicker(App)
 
 // ReactDOM.render(<App />, document.getElementById('root'))
-ReactDOM.render(<AppWithServerTime />, document.getElementById('root'))
+ReactDOM.render(<AppWithServerSyncedTicker />, document.getElementById('root'))
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
