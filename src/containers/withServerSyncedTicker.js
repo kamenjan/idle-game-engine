@@ -1,34 +1,37 @@
 import React from 'react'
 import { create } from 'timesync/dist/timesync'
 import { sleep } from '../utils/functional'
-import moment from 'moment'
 
-export default function withServerSyncedTicker(App) {
-  return class extends React.Component {
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { sync, tick } from '../store/sync'
 
-    constructor () {
-      super()
-
-      // All this has to be in state so I can implement UI "admin" controller
-      this.state = {
-        serverTime: 0,
-        localTime: 0,
-        synced: false,
-        lastSync: 0, // relative to server time
-        offset: 0
-      }
+function withServerSyncedTicker(App) {
+  class ServerSyncedTicker extends React.Component {
+    constructor (props) {
+      super(props)
 
       // Initialize sync controller
-      this.syncController = this.initializeSyncController(
-        create, '/api/servertime/timesync'
-      )
-
-      this.syncController.on('change', async offset => {  // change in server/client time offset while syncing
+      this.syncController =
+        this.initializeSyncController(create, '/api/servertime/sync')
+      // Define event handler for changes in client-server time offset.
+      // Synchronization algorithm asks for current server time five times
+      // with one second intervals between requests. It uses first response
+      // to calculate offset for asap update to client. Then it waits for
+      // all five, calculates their median value and sets that as the new
+      // more accurate offset.
+      this.syncController.on('change', async offset => {
+        // Each time a change in the offset occurs, we check if internal server
+        // synced clock already exists. If it does, we stop it and set a new one
+        // that starts at full second according to synced time, hence 'await'.
         this.internalClock && this.internalClock.stop()
         this.internalClock = await this.setInternalClock(offset, 1000).start()
-        this.setState(()=>({ lastSync: Date.now() + offset, synced: true, offset }))
-      }).sync() // Start syncing process ASAP
+        // Update the state so we know when and that clocks were synced.
+        this.props.sync(offset)
+      })
 
+      // Start syncing process asap
+      this.syncController.sync()
     }
 
     initializeSyncController = (create, serverTimesyncUrl, interval) => {
@@ -38,9 +41,15 @@ export default function withServerSyncedTicker(App) {
       })
     }
 
-    setInternalClock (offset, interval) {
+    // setInternalClock simulates setInterval, but includes self correcting
+    // mechanism because native setInterval drifts. It does so by invoking
+    // sequential setTimeout events while accounting for the drift in between
+    // the calls.
+    setInternalClock = (offset, interval) => {
       let expected, timeout
+
       this.start = async () => {
+        // Wait for full second before starting the interval
         await sleep(this.timestampToNextRoundSecond(Date.now() + offset))
         expected = Date.now() + interval
         timeout = setTimeout(step, interval)
@@ -54,10 +63,7 @@ export default function withServerSyncedTicker(App) {
         if (drift > interval) {
           this.stop()
         } else {
-          this.setState(()=>({
-            serverTime: Date.now() + offset,
-            localTime: Date.now()
-          }))
+          this.props.tick(offset)
           expected += interval
           timeout = setTimeout(step, Math.max(0, interval-drift))
         }
@@ -70,35 +76,15 @@ export default function withServerSyncedTicker(App) {
     }
     
     render() {
-      // Wraps the input component in a container, without mutating it. Good!
-      return (
-        <div>
-          <div className={'debug-controller'} >
-            <div>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>offset:</td>
-                    <td>{this.state.offset}</td>
-                  </tr>
-                  <tr>
-                    <td>local time:</td>
-                    <td>{this.state.localTime}</td>
-                    <td>{moment(this.state.localTime).format("hh:mm:ss")}</td>
-                  </tr>
-                  <tr>
-                    <td>server time:</td>
-                    <td>{this.state.serverTime}</td>
-                    <td>{moment(this.state.serverTime).format("hh:mm:ss")}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <button onClick={this.syncController.sync} >Sync server time</button>
-            </div>
-          </div>
-          <App {...this.state} {...this.props}/>
-        </div>
-      )
+      return <App/>
     }
   }
+
+  const mapDispatchToProps = dispatch => (
+    bindActionCreators({ sync, tick }, dispatch)
+  )
+
+  return connect(()=>({}), mapDispatchToProps)(ServerSyncedTicker);
 }
+
+export default withServerSyncedTicker

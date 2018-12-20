@@ -1,3 +1,5 @@
+Example client for persistent based/idle browser game.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -37,8 +39,22 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Roadmap
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 1. Server-client time synchronization and time tracking [DONE]
+
+I have written a higher order component `withServerSyncedTicker.js` that utilizes network syncing algorithm similar to [SNTP](https://en.wikipedia.org/wiki/Network_Time_Protocol#SNTP). A helpful discussion on [gamedev.stackexchange](https://gamedev.stackexchange.com/a/93662). Crude implementation is available as an [npm package](https://www.npmjs.com/package/timesync).
+
+### 2. Write solid database integration with migrations and scripts  
+
+
+
+### 3. Implement authentication layer
+
+
+
+### 4. Use redux for handling application state
+
+State will be plentiful and often refactored. To make it manageable and scalable
+I will use redux in the earliest stage.
