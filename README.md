@@ -46,11 +46,33 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 I have written a higher order component `withServerSyncedTicker.js` that utilizes network syncing algorithm similar to [SNTP](https://en.wikipedia.org/wiki/Network_Time_Protocol#SNTP). A helpful discussion on [gamedev.stackexchange](https://gamedev.stackexchange.com/a/93662). Crude implementation is available as an [npm package](https://www.npmjs.com/package/timesync).
 
+TODO: split in three component (by functionality)
+ 1. sync component
+    - gets current game tick, current server time and client clock offset
+ 2. clock component
+    - when offset changes it calculates server time
+    - sets accurate interval that updates current time
+ 3. tick component
+    - how do I solve it?
+      1. ( (serverTime.now - firstTickTime) / tick.length)
+        hard to make changes on the fly to tick length
+      2. ask server for current ticker and do the calculations
+      
+      
+TODO: solve timeout and interval updates to state
+https://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559
+
 ### 2. Write solid database integration with migrations and scripts  
 
 
 
 ### 3. Implement authentication layer
+
+redux/react/auth nice guide:
+http://jasonwatmore.com/post/2017/09/16/react-redux-user-registration-and-login-tutorial-example#store-js
+
+folder structure:
+https://medium.com/front-end-weekly/the-three-pigs-how-to-structure-react-redux-application-67f5e3c68392
 
 
 

@@ -1,41 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 
-import * as serviceWorker from './serviceWorker';
+import './index.css'
 
-import App from './App';
+import * as serviceWorker from './serviceWorker'
+
+import App from './App'
 import withServerSyncedTicker from './containers/withServerSyncedTicker'
 
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { createLogger } from 'redux-logger'
-
-import promiseMiddleware from 'redux-promise-middleware'
-import thunk from 'redux-thunk'
-
 import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import { Route, Switch } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import { store } from './store'
 
-import sync from './store/sync'
-// import settings from 'store/settings'
-
-const store = createStore(
-  combineReducers({
-    // settings,
-    sync
-  }),
-  applyMiddleware(
-    thunk,
-    promiseMiddleware(),
-    /* dev redux logger */
-    // createLogger()
-  )
-)
+const history = createBrowserHistory()
 
 const AppWithServerSyncedTicker = withServerSyncedTicker(App)
 
 ReactDOM.render((
-  <Provider store={store}>
-    <AppWithServerSyncedTicker />
+  <Provider store={store(history)}>
+    <ConnectedRouter history={history}>
+      <Switch>
+        <Route path="/" component={AppWithServerSyncedTicker} />
+      </Switch>
+    </ConnectedRouter>
   </Provider>
 ), document.getElementById('root'))
 

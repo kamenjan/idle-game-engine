@@ -3,17 +3,24 @@ import { create } from 'timesync/dist/timesync'
 import { sleep } from '../utils/functional'
 
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { sync, tick } from '../store/sync'
 
-function withServerSyncedTicker(App) {
+import { SYNC, TICK } from '../constants/actionTypes'
+
+function withServerSyncedTicker (App) {
+
+  const mapDispatchToProps = dispatch => ({
+    offsetUpdate: offset => dispatch({ type: SYNC, offset }),
+    onTick: offset => dispatch({ type: TICK, offset })
+  })
+
   class ServerSyncedTicker extends React.Component {
     constructor (props) {
       super(props)
 
-      // Initialize sync controller
+      // Initialize time controller
       this.syncController =
         this.initializeSyncController(create, '/api/servertime/sync')
+
       // Define event handler for changes in client-server time offset.
       // Synchronization algorithm asks for current server time five times
       // with one second intervals between requests. It uses first response
@@ -25,9 +32,10 @@ function withServerSyncedTicker(App) {
         // synced clock already exists. If it does, we stop it and set a new one
         // that starts at full second according to synced time, hence 'await'.
         this.internalClock && this.internalClock.stop()
+        // NOTE: I've disabled internal clock to track redux state
         this.internalClock = await this.setInternalClock(offset, 1000).start()
         // Update the state so we know when and that clocks were synced.
-        this.props.sync(offset)
+        this.props.offsetUpdate(offset)
       })
 
       // Start syncing process asap
@@ -63,7 +71,7 @@ function withServerSyncedTicker(App) {
         if (drift > interval) {
           this.stop()
         } else {
-          this.props.tick(offset)
+          this.props.onTick(offset)
           expected += interval
           timeout = setTimeout(step, Math.max(0, interval-drift))
         }
@@ -80,11 +88,7 @@ function withServerSyncedTicker(App) {
     }
   }
 
-  const mapDispatchToProps = dispatch => (
-    bindActionCreators({ sync, tick }, dispatch)
-  )
-
-  return connect(()=>({}), mapDispatchToProps)(ServerSyncedTicker);
+  return connect(null, mapDispatchToProps)(ServerSyncedTicker)
 }
 
 export default withServerSyncedTicker

@@ -4,10 +4,11 @@ import moment from "moment/moment";
 import { connect } from "react-redux"
 
 const mapStateToProps = state => ({
-  ...state.sync
+  ...state.time
 })
 
 const DevelopmentInterface = props => {
+
   let {serverTime, localTime, synced, lastSync, offset } = props
   return(
     <table>

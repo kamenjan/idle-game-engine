@@ -9539,7 +9539,7 @@ wordwrap@~1.0.0:
 
 workbox-background-sync@^3.6.3:
   version "3.6.3"
-  resolved "https://registry.yarnpkg.com/workbox-background-sync/-/workbox-background-sync-3.6.3.tgz#6609a0fac9eda336a7c52e6aa227ba2ae532ad94"
+  resolved "https://registry.yarnpkg.com/workbox-background-time/-/workbox-background-time-3.6.3.tgz#6609a0fac9eda336a7c52e6aa227ba2ae532ad94"
   integrity sha512-ypLo0B6dces4gSpaslmDg5wuoUWrHHVJfFWwl1udvSylLdXvnrfhFfriCS42SNEe5lsZtcNZF27W/SMzBlva7Q==
   dependencies:
     workbox-core "^3.6.3"
@@ -9565,7 +9565,7 @@ workbox-build@^3.6.3:
     pretty-bytes "^4.0.2"
     stringify-object "^3.2.2"
     strip-comments "^1.0.2"
-    workbox-background-sync "^3.6.3"
+    workbox-background-time "^3.6.3"
     workbox-broadcast-cache-update "^3.6.3"
     workbox-cache-expiration "^3.6.3"
     workbox-cacheable-response "^3.6.3"
@@ -9603,7 +9603,7 @@ workbox-google-analytics@^3.6.3:
   resolved "https://registry.yarnpkg.com/workbox-google-analytics/-/workbox-google-analytics-3.6.3.tgz#99df2a3d70d6e91961e18a6752bac12e91fbf727"
   integrity sha512-RQBUo/6SXtIaQTRFj4RQZ9e1gAl7D8oS5S+Hi173Kk70/BgJjzPwXpC5A249Jv5YfkCOLMQCeF9A27BiD0b0ig==
   dependencies:
-    workbox-background-sync "^3.6.3"
+    workbox-background-time "^3.6.3"
     workbox-core "^3.6.3"
     workbox-routing "^3.6.3"
     workbox-strategies "^3.6.3"
