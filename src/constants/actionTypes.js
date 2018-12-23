@@ -5,6 +5,10 @@ export const LOGIN = 'LOGIN'
 export const LOGIN_PENDING = 'LOGIN_PENDING'
 export const LOGIN_FULFILLED = 'LOGIN_FULFILLED'
 export const LOGIN_REJECTED = 'LOGIN_REJECTED'
+export const LOGOUT = 'LOGOUT'
+export const LOGOUT_PENDING = 'LOGOUT_PENDING'
+export const LOGOUT_FULFILLED = 'LOGOUT_FULFILLED'
+export const LOGOUT_REJECTED = 'LOGOUT_REJECTED'
 
 // From example project
 export const APP_LOAD = 'APP_LOAD';
@@ -26,7 +30,6 @@ export const APPLY_TAG_FILTER = 'APPLY_TAG_FILTER';
 export const CHANGE_TAB = 'CHANGE_TAB';
 export const PROFILE_PAGE_LOADED = 'PROFILE_PAGE_LOADED';
 export const PROFILE_PAGE_UNLOADED = 'PROFILE_PAGE_UNLOADED';
-export const LOGOUT = 'LOGOUT';
 export const REGISTER = 'REGISTER';
 export const LOGIN_PAGE_UNLOADED = 'LOGIN_PAGE_UNLOADED';
 export const REGISTER_PAGE_UNLOADED = 'REGISTER_PAGE_UNLOADED';

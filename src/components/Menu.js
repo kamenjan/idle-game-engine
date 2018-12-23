@@ -14,7 +14,7 @@ class Menu extends React.PureComponent {
   menuItems = () => ([
     {
       icon: <FaArrowCircleLeft size={'2em'} color={'yellow'} />,
-      routes: ['/coin', '/settings'],
+      routes: ['/coin', '/settings', '/login'],
       location: '#',
       action: this.props.goBack
     },

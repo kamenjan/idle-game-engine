@@ -7,8 +7,9 @@ import createRootReducer from './reducers'
 import { applyMiddleware, compose, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import promiseMiddleware from 'redux-promise-middleware'
 import { routerMiddleware } from 'connected-react-router'
+import promiseMiddleware from 'redux-promise-middleware'
+import thunk from 'redux-thunk'
 
 export const store = history => {
   return createStore(
@@ -16,7 +17,8 @@ export const store = history => {
     composeWithDevTools( // use 'compose' in production
       applyMiddleware(
         routerMiddleware(history),
-        promiseMiddleware()
+        promiseMiddleware(),
+        thunk
       )
     )
   )

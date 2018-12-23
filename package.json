@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "3.7.0",
+    "@material-ui/icons": "latest",
+    "bcrypt": "3.0.2",
     "connected-react-router": "6.0.0",
     "history": "4.7.2",
     "moment": "2.23.0",

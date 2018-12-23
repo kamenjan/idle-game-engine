@@ -8,9 +8,11 @@ import * as serviceWorker from './serviceWorker'
 import App from './App'
 import withServerSyncedTicker from './containers/withServerSyncedTicker'
 
+import LoginContainer from './containers/LoginContainer'
+
 import { Provider } from 'react-redux'
 import { ConnectedRouter } from 'connected-react-router'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { createBrowserHistory } from 'history'
 import { store } from './store'
 
@@ -18,11 +20,17 @@ const history = createBrowserHistory()
 
 const AppWithServerSyncedTicker = withServerSyncedTicker(App)
 
+const requireAuth = (nextState, replace, next) => true
+
 ReactDOM.render((
   <Provider store={store(history)}>
     <ConnectedRouter history={history}>
       <Switch>
-        <Route path="/" component={AppWithServerSyncedTicker} />
+        <Route exact path="/" render={() => (requireAuth() ?
+              (<AppWithServerSyncedTicker />) : (<Redirect to="/login"/>)
+          )}
+        />
+        <Route path="/login" component={LoginContainer} />
       </Switch>
     </ConnectedRouter>
   </Provider>

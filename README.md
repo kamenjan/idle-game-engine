@@ -59,7 +59,7 @@ TODO: split in three component (by functionality)
       2. ask server for current ticker and do the calculations
       
       
-TODO: solve timeout and interval updates to state
+TODO: solve timeout and interval updates to state (using thunk)
 https://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559
 
 ### 2. Write solid database integration with migrations and scripts  
