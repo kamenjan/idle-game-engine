@@ -4,13 +4,15 @@ import { sleep } from '../utils/functional'
 
 import { connect } from 'react-redux'
 
-import { SYNC, TICK } from '../constants/actionTypes'
+import { SYNC, TICK, START_TIMER, STOP_TIMER } from '../constants/actionTypes'
 
-function withServerSyncedTicker (App) {
+function withServerSyncedTicker (Component) {
 
   const mapDispatchToProps = dispatch => ({
     offsetUpdate: offset => dispatch({ type: SYNC, offset }),
-    onTick: offset => dispatch({ type: TICK, offset })
+    onTick: offset => dispatch({ type: TICK, offset }),
+    onStartTimer: () => dispatch({ type: START_TIMER }),
+    onStopTimer: () => dispatch({ type: STOP_TIMER })
   })
 
   class ServerSyncedTicker extends React.Component {
@@ -31,9 +33,12 @@ function withServerSyncedTicker (App) {
         // Each time a change in the offset occurs, we check if internal server
         // synced clock already exists. If it does, we stop it and set a new one
         // that starts at full second according to synced time, hence 'await'.
-        this.internalClock && this.internalClock.stop()
+        if (this.internalClock) {
+          this.internalClock.stop()
+          // this.props.onStopTimer()
+        }
         // NOTE: I've disabled internal clock to track redux state
-        this.internalClock = await this.setInternalClock(offset, 1000).start()
+        // this.internalClock = await this.setInternalClock(offset, 1000).start()
         // Update the state so we know when and that clocks were synced.
         this.props.offsetUpdate(offset)
       })
@@ -47,6 +52,10 @@ function withServerSyncedTicker (App) {
         server: serverTimesyncUrl,
         interval: interval ? interval : null
       })
+    }
+
+    startInternalClock = async (offset) => {
+      // this.internalClock = await this.setInternalClock(offset, 1000).start()
     }
 
     // setInternalClock simulates setInterval, but includes self correcting
@@ -84,7 +93,7 @@ function withServerSyncedTicker (App) {
     }
     
     render() {
-      return <App/>
+      return <Component { ...this.props }/>
     }
   }
 

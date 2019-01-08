@@ -24,6 +24,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import SettingsIcon from '@material-ui/icons/Settings';
+import LogOut from '@material-ui/icons/ExitToApp';
 
 
 const drawerWidth = 240;
@@ -82,25 +83,25 @@ class ResponsiveDrawer extends React.Component {
       mobileOpen: false,
       anchorEl: null,
       mobileMoreAnchorEl: null
-    };
+    }
   }
 
   handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-  };
+    this.setState(state => ({ mobileOpen: !state.mobileOpen }))
+  }
 
   handleMobileMenuOpen = event => {
-    this.setState({ mobileMoreAnchorEl: event.currentTarget });
-  };
+    this.setState({ mobileMoreAnchorEl: event.currentTarget })
+  }
 
   handleMobileMenuClose = () => {
-    this.setState({ mobileMoreAnchorEl: null });
-  };
+    this.setState({ mobileMoreAnchorEl: null })
+  }
 
   render() {
-    const { classes, theme } = this.props;
-    const { mobileMoreAnchorEl } = this.state;
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const { classes, theme } = this.props
+    const { mobileMoreAnchorEl } = this.state
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
     const drawer = (
       <div>
@@ -122,7 +123,7 @@ class ResponsiveDrawer extends React.Component {
           ))}
         </List>
       </div>
-    );
+    )
 
     const renderMobileMenu = (
       <Menu
@@ -150,12 +151,12 @@ class ResponsiveDrawer extends React.Component {
         </MenuItem>
         <MenuItem onClick={this.handleProfileMenuOpen}>
           <IconButton color="inherit">
-            <AccountCircle />
+            <LogOut />
           </IconButton>
           <p>Profile</p>
         </MenuItem>
       </Menu>
-    );
+    )
 
     return (
       <div className={classes.root}>
@@ -187,12 +188,16 @@ class ResponsiveDrawer extends React.Component {
                 </Badge>
               </IconButton>
               <IconButton color="inherit">
-                <AccountCircle />
+                <LogOut />
               </IconButton>
             </div>
 
             <div className={classes.sectionMobile}>
-              <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+              <IconButton
+                aria-haspopup="true"
+                onClick={this.handleMobileMenuOpen}
+                color="inherit"
+              >
                 <MoreIcon />
               </IconButton>
             </div>
@@ -201,7 +206,6 @@ class ResponsiveDrawer extends React.Component {
         </AppBar>
         {renderMobileMenu}
         <nav className={classes.drawer}> {/* Navigation drawer */}
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <Hidden mdUp implementation="css">
             <Drawer
               container={this.props.container}
@@ -209,18 +213,14 @@ class ResponsiveDrawer extends React.Component {
               anchor={theme.direction === 'rtl' ? 'right' : 'left'}
               open={this.state.mobileOpen}
               onClose={this.handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
+              classes={{ paper: classes.drawerPaper }}
             >
               {drawer}
             </Drawer>
           </Hidden>
           <Hidden smDown implementation="css">
             <Drawer
-              classes={{
-                paper: classes.drawerPaper,
-              }}
+              classes={{ paper: classes.drawerPaper }}
               variant="permanent"
               open
             >
@@ -233,8 +233,8 @@ class ResponsiveDrawer extends React.Component {
           {this.props.children}
         </main>
       </div>
-    );
+    )
   }
 }
 
-export default withStyles(styles, { withTheme: true })(ResponsiveDrawer);
+export default withStyles(styles, { withTheme: true })(ResponsiveDrawer)

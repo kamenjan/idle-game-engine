@@ -1,6 +1,5 @@
 // My constants
-export const SYNC = 'SYNC'
-export const TICK = 'TICK'
+
 export const LOGIN = 'LOGIN'
 export const LOGIN_PENDING = 'LOGIN_PENDING'
 export const LOGIN_FULFILLED = 'LOGIN_FULFILLED'
@@ -9,6 +8,11 @@ export const LOGOUT = 'LOGOUT'
 export const LOGOUT_PENDING = 'LOGOUT_PENDING'
 export const LOGOUT_FULFILLED = 'LOGOUT_FULFILLED'
 export const LOGOUT_REJECTED = 'LOGOUT_REJECTED'
+export const SYNC = 'SYNC'
+export const TICK = 'TICK'
+export const START_TIMER = 'START_TIMER'
+export const STOP_TIMER = 'STOP_TIMER'
+
 
 // From example project
 export const APP_LOAD = 'APP_LOAD';

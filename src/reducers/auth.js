@@ -4,12 +4,13 @@ import {
   LOGIN_REJECTED,
   LOGOUT_PENDING,
   LOGOUT_FULFILLED,
-  LOGOUT_REJECTED
+  LOGOUT_REJECTED,
 } from '../constants/actionTypes'
 
 const initialState = {
-  inProgress: false,
-  errors: null
+  loggedIn: false,
+  inProgress: true,
+  error: null,
 }
 
 export default (state = initialState, action) => {
@@ -20,34 +21,31 @@ export default (state = initialState, action) => {
         inProgress: true,
       }
     case LOGIN_FULFILLED:
-
-      // loggedin = action.payload.loggedin
-
       return {
         ...state,
         inProgress: false,
-        loggedIn: true
+        loggedIn: action.payload.loggedIn,
       }
     case LOGIN_REJECTED:
       return {
         ...state,
         inProgress: false,
-        error: action.payload
+        error: action.payload,
       }
     case LOGOUT_PENDING:
       return {
         ...state,
-        inProgress: true
+        inProgress: true,
       }
     case LOGOUT_FULFILLED:
       return {
         ...state,
-        loggedIn: false
+        loggedIn: false,
       }
     case LOGOUT_REJECTED:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
       }
     default:
       return state

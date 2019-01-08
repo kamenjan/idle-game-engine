@@ -1,4 +1,4 @@
-import { SYNC, TICK } from '../constants/actionTypes'
+import { SYNC, TICK, START_TIMER, STOP_TIMER } from '../constants/actionTypes'
 
 const initState = {
   serverTime: 0,
@@ -6,7 +6,8 @@ const initState = {
   synced: false,
   lastSync: 0, // relative to server time
   offset: 0,
-  tick: 0
+  tick: 0,
+  running: false
 }
 
 export default (state = initState, action) => {
@@ -23,7 +24,17 @@ export default (state = initState, action) => {
         ...state,
         serverTime: Date.now() + action.offset,
         localTime: Date.now(),
-        tick: 0
+        tick: state.tick + 1
+      }
+    case STOP_TIMER:
+      return {
+        ...state,
+        running: false
+      }
+    case START_TIMER:
+      return {
+        ...state,
+        running: true
       }
     default:
       return state

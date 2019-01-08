@@ -1,42 +1,41 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import * as serviceWorker from './serviceWorker'
 
-import App from './App'
-import withServerSyncedTicker from './containers/withServerSyncedTicker'
+import AppContainer from './containers/AppContainer'
 
-import LoginContainer from './containers/LoginContainer'
+// NOTE: Server dependency [auth]
+// import LoginContainer from './containers/LoginContainer'
 
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+
 import { ConnectedRouter } from 'connected-react-router'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+
 import { createBrowserHistory } from 'history'
-import { store } from './store'
+import initializeStore from './store'
 
 const history = createBrowserHistory()
+const { store, persistor } = initializeStore(history)
 
-const AppWithServerSyncedTicker = withServerSyncedTicker(App)
-
-const requireAuth = (nextState, replace, next) => true
-
-ReactDOM.render((
-  <Provider store={store(history)}>
-    <ConnectedRouter history={history}>
-      <Switch>
-        <Route exact path="/" render={() => (requireAuth() ?
-              (<AppWithServerSyncedTicker />) : (<Redirect to="/login"/>)
-          )}
-        />
-        <Route path="/login" component={LoginContainer} />
-      </Switch>
-    </ConnectedRouter>
-  </Provider>
-), document.getElementById('root'))
+ReactDOM.render(
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <ConnectedRouter history={history}>
+        <Switch>
+          <Route exact path='/' component={AppContainer} />
+          {/* NOTE: Server dependency [auth] */}
+          {/*<Route path='/login' component={LoginContainer} />*/}
+        </Switch>
+      </ConnectedRouter>
+    </PersistGate>
+  </Provider>,
+  document.getElementById('root'),
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.unregister()

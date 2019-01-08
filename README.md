@@ -64,6 +64,7 @@ https://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with
 
 ### 2. Write solid database integration with migrations and scripts  
 
+I've changed spec to client side browser app.
 
 
 ### 3. Implement authentication layer
@@ -75,8 +76,34 @@ folder structure:
 https://medium.com/front-end-weekly/the-three-pigs-how-to-structure-react-redux-application-67f5e3c68392
 
 
-
 ### 4. Use redux for handling application state
 
 State will be plentiful and often refactored. To make it manageable and scalable
 I will use redux in the earliest stage.
+
+
+
+#### 5. Implementing game loop and state saving
+
+Each resources has 
+BASE: value
+DELTA: modifier/sec
+CURRENT_VALUE: ui value
+LAST_UPDATE: BASE update full_second
+
+Workflow:
+
+loading();
+    - calculate difference: (now_full_second - LAST_UPDATE_full_second) * DELTA
+    - set CURRENT_VALUE: BASE + difference
+    - initialize gameLoop()
+           
+gameLoop(); // auto-correcting interval that happens every 100 ms
+    - CURRENT_VALUE: state.CURRENT_VALUE + (DELTA/10)
+    - if (LAST_UPDATE > 15 000ms)  
+        save()
+    
+save(): 
+    - set BASE: state.CURRENT_VALUE
+    - set LAST_UPDATE: date.now() 
+     
