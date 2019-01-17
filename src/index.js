@@ -5,9 +5,6 @@ import * as serviceWorker from './serviceWorker'
 
 import AppContainer from './containers/AppContainer'
 
-// NOTE: Server dependency [auth]
-// import LoginContainer from './containers/LoginContainer'
-
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
@@ -26,8 +23,6 @@ ReactDOM.render(
       <ConnectedRouter history={history}>
         <Switch>
           <Route exact path='/' component={AppContainer} />
-          {/* NOTE: Server dependency [auth] */}
-          {/*<Route path='/login' component={LoginContainer} />*/}
         </Switch>
       </ConnectedRouter>
     </PersistGate>
