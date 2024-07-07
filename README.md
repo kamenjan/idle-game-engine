@@ -100,53 +100,53 @@ Essentials:
                 
 #### 6. Implementing initialization mechanics and game loop    
 
-loading()
-    get game defines // resources, generators, settings
-    if (save)
-        timeDelta = save.lastUpdated
-        for.defines.resources
-            ui.resource.CurrentValue = save.resources[tmp.resource.id].base                 
+    loading()
+        get game defines // resources, generators, settings
+        if (save)
+            timeDelta = save.lastUpdated
+            for.defines.resources
+                ui.resource.CurrentValue = save.resources[tmp.resource.id].base                 
+                for.defines.generators
+                    if (tmp.generator.productionRate.resourceId == tmp.resource.id)
+                        productionRate = defines.generators[tmp.generator].productionRate * save[tmp.generator.id].count
+                        difference = (now.fullSecond - save.lastUpdate.full_second) * productionRate
+                        ui.resource.CurrentValue += difference
+        - if (!save)
+            save.resources = []                   
+            for.defines.resources
+                // also set id
+                save.resources[tmp.resource].base = 0
+                save.resources[tmp.resource].unlocked = tmp.resource.unlocked
+            save.generators = []
             for.defines.generators
-                if (tmp.generator.productionRate.resourceId == tmp.resource.id)
-                    productionRate = defines.generators[tmp.generator].productionRate * save[tmp.generator.id].count
-                    difference = (now.fullSecond - save.lastUpdate.full_second) * productionRate
-                    ui.resource.CurrentValue += difference
-    - if (!save)
-        save.resources = []                   
-        for.defines.resources
-            // also set id
-            save.resources[tmp.resource].base = 0
-            save.resources[tmp.resource].unlocked = tmp.resource.unlocked
-        save.generators = []
-        for.defines.generators
-            // also set id
-            save.generators[tmp.generator].count = 0
-        save.capacitors = []     
-        for.defines.capacitors
-            // also set id
-            save.capacitors[tmp.capacitor].count = 0                
-        settings = []
-        for.defines.settings
-            save.settings.(tmp.setting.key) = tmp.setting.value 
-        save.game.lastUpdate = Date.now()              
-        - modifications to initial game defines for purposes of ui state (count, currentValue, ...)
-        - save()
-    - initialize gameLoop()     
-    
-gameLoop() // auto-correcting interval that happens every 100 ms
-    - ui.currentValue: ui.currentValue + (productionRate/10)
-    - if (save.lastUpdate > 15 000ms)  
-        save()
+                // also set id
+                save.generators[tmp.generator].count = 0
+            save.capacitors = []     
+            for.defines.capacitors
+                // also set id
+                save.capacitors[tmp.capacitor].count = 0                
+            settings = []
+            for.defines.settings
+                save.settings.(tmp.setting.key) = tmp.setting.value 
+            save.game.lastUpdate = Date.now()              
+            - modifications to initial game defines for purposes of ui state (count, currentValue, ...)
+            - save()
+        - initialize gameLoop()     
         
-save()
-    - save.base: ui.currentValue // resources
-    - save.count: ui.count // generators & capacitors
-    - save.lastUpdate: date.now
-        
+    gameLoop() // auto-correcting interval that happens every 100 ms
+        - ui.currentValue: ui.currentValue + (productionRate/10)
+        - if (save.lastUpdate > 15 000ms)  
+            save()
+            
+    save()
+        - save.base: ui.currentValue // resources
+        - save.count: ui.count // generators & capacitors
+        - save.lastUpdate: date.now
+            
 #### 7. user interface
 
-ui rough functions:
-    - add X of Y resource //click
-    - add X ( generator || capacitor )
-    - upgrade / modify multiplier
-     
+    ui rough functions:
+        - add X of Y resource //click
+        - add X ( generator || capacitor )
+        - upgrade / modify multiplier
+         
